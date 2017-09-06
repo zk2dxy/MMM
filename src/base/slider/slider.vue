@@ -32,25 +32,25 @@
     },
     data () {
       return {
-        currentPageIndex: 0,
-        dots: 0
+        currentPageIndex: 0, // 当前第几个索引值
+        dots: 0 // 轮播点的数量
       }
     },
-    activated () {
+    activated () { // 组件被激活时的调用轮播事件
       if (this.slider) {
         this.slider.enable()
         this._play()
       }
     },
-    deactivated () {
+    deactivated () { // keep-alive 组件停用时调用。
       this.slider.disable()
       clearTimeout(this.timer)
     },
-    beforeDestroy () {
+    beforeDestroy () { // 实例销毁之前调用。在这一步，实例仍然完全可用。
       this.slider.disable()
       clearTimeout(this.timer)
     },
-    mounted () {
+    mounted () { // DOM加载完毕后的钩子调用
       setTimeout(() => {
         this._initSliderWidth()
         this._initSlider()
@@ -58,7 +58,7 @@
           this._play()
         }
       }, 20)
-      window.addEventListener('resize', () => {
+      window.addEventListener('resize', () => { // 窗口事件
         this._initSliderWidth(true)
         clearTimeout(this.resizeTimer)
         this.resizeTimer = setTimeout(() => {
@@ -74,13 +74,13 @@
       })
     },
     methods: {
-      refresh () {
+      refresh () { // refresh bscroll
         if (this.slider) {
           this._setSliderWidth(true)
           this.slider.refresh()
         }
       },
-      _initSliderWidth (isResize) {
+      _initSliderWidth (isResize) { // 初始化轮播的宽度
         this.children = this.$refs.sliderGroup.children // Dom => child
         let sliderWidth = this.$refs.slider.clientWidth
         this.dots = this.children.length
@@ -95,7 +95,7 @@
         }
         this.$refs.sliderGroup.style.width = width + `px`
       },
-      _initSlider () {
+      _initSlider () { // 初始化轮播
         this.slider = new BScroll(this.$refs.slider, {
           scrollX: true,
           scrollY: false,
@@ -113,7 +113,7 @@
           }
         })
       },
-      _onScrollEnd () {
+      _onScrollEnd () { // 轮播结束时候
         let pageIndex = this.slider.getCurrentPage().pageX
         if (this.loop) {
           pageIndex -= 1
@@ -123,7 +123,7 @@
           this._play()
         }
       },
-      _play () {
+      _play () { // 定时轮播方法
         let pageIndex = this.slider.getCurrentPage().pageX + 1
         clearTimeout(this.timer)
         this.timer = setTimeout(() => {
