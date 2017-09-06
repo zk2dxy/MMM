@@ -1,4 +1,4 @@
-# 野鸡App dev
+# 野鸡App Master
 
 > A Vue.js project
 
