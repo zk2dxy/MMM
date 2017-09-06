@@ -2,12 +2,12 @@
   <div class="recommend" ref="recommend">
     <div ref="scroll" class="recommend-content">
       <div>
-        <div v-if="recommends.length" class="slider-wrapper">
+        <div v-if="recommends.length>0" ref="slider-wrapper">
           <div class="slider-content">
             <slider ref="slider">
               <div v-for="item in recommends">
                 <a :href="item.linkUrl">
-                  <img :src="item.picUrl">
+                  <img :src="item.picUrl"/>
                 </a>
               </div>
             </slider>
@@ -26,23 +26,26 @@
   export default {
     data () {
       return {
-        recommends: []
+        recommends: {
+          type: Array,
+          default: []
+        }
       }
     },
     components: {
       Slider
     },
-    created () {
-      this._getRecommends()
+    mounted () {
+      this._getRecommend()
     },
     methods: {
-      _getRecommends () {
-        getRecommend().then((res) => {
+      _getRecommend () {
+        getRecommend().then(res => {
           if (res.code === ERR_OK) {
+            // console.log(res.data)
             this.recommends = res.data.slider
-            console.log(this.recommends)
           } else {
-            this.recommends = []
+            console.log('errorRequest')
           }
         })
       }

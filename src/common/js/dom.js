@@ -5,9 +5,9 @@ export function hasClass (el, className) {
 
 export function addClass (el, className) {
   if (hasClass(el, className)) {
-    return
+    return false
   }
   let newClass = el.className.split(' ')
   newClass.push(className)
-  el.className = newClass.join(' ')
+  return newClass.join(' ')
 }
