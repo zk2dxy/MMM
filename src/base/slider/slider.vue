@@ -1,23 +1,36 @@
 <template>
   <div class="slider" ref="slider">
     <div class="slider-group" ref="sliderGroup">
-      <slot>
-      </slot>
+      <slot></slot>
     </div>
-    <!--
-    <div class="dots">-->
-    <!--<span class="dot" :class="{active: currentPageIndex === index }" v-for="(item,index) in dots"></span>-->
-    <!--</div>
-    -->
+    <div class="dots" v-if="dots>0">
+      <span class="dot" :class="{active: currentPageIndex === index }" v-for="(item,index) in dots"></span>
+    </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
-  import { addClasses } from 'common/js/dom.js'
-  // import BScroll from 'better-scroll'
+  import BScroll from 'better-scroll'
+  import { addClass } from 'common/js/dom.js'
 
   export default {
     name: 'slider',
+    data () {
+      return {
+        children: {
+          type: Array,
+          default: []
+        },
+        currentPageIndex: {
+          type: Number,
+          default: 0
+        },
+        dots: {
+          type: Number,
+          default: 0
+        }
+      }
+    },
     props: {
       loop: {
         type: Boolean,
@@ -28,8 +41,8 @@
         default: true
       },
       interval: {
-        type: Boolean,
-        default: true
+        type: Number,
+        default: 4000
       }
     },
     activated () {
@@ -48,30 +61,71 @@
       // keep-alive 组件停用时调用。
     },
     mounted () {
-      setTimeout(() => {
-        this.__initSliderLayer()
-      }, 1000)
+      window.addEventListener('load', () => {
+        setTimeout(() => {
+          this._initSliderLayer()
+          this._initSlider()
+        }, 20)
+      })
+      window.addEventListener('resize', () => {
+        this._initSliderLayer(true)
+        this._refresh()
+      })
     },
     methods: {
-      // 初始化轮播
-      __initSliderLayer (isResize) {
+      _initSliderLayer (isResize) {
+        this.children = this.$refs.sliderGroup.children // Dom => child
         let sliderWidth = this.$refs.slider.clientWidth
-        // console.warn(`sliderWidth = ` + sliderWidth)
-        this.children = this.$refs.sliderGroup.children
-        // console.warn(this.children)
-        for (let i = 0; i < this.children.length; i++) {
-          addClasses(this.children[i], 'slider-item')
-          this.children[i].style.width = sliderWidth + `px`
+        this.dots = this.children.length
+        let width = 0
+        for (let child of this.children) {
+          addClass(child, 'slider-item') // Add class 'slider-item'
+          child.style.width = sliderWidth + 'px' // Set single slider width
+          width += sliderWidth
+        }
+        if (this.loop && !isResize) {
+          width += 2 * sliderWidth // Slider two more width for copy slider
+        }
+        this.$refs.sliderGroup.style.width = width + 'px'
+      },
+      _initSlider () {
+        this.slider = new BScroll(this.$refs.slider, {
+          scrollX: true,
+          scrollY: false,
+          momentum: false,
+          snap: {
+            loop: this.loop,
+            threshold: 0.3,
+            speed: 400
+          }
+        })
+        this.slider.on('scrollEnd', () => {
+          this._onScrollEnd()
+        })
+      },
+      _play () {
+        let pageIndex = this.slider.getCurrentPage().pageX + 1
+        clearTimeout(this.timer)
+        this.timer = setTimeout(() => {
+          this.slider.goToPage(pageIndex, 0, 400)
+        }, this.interval)
+      },
+      _refresh () {
+        if (this.slider) {
+          this._initSliderLayer(true)
+          this.slider.refresh()
         }
       },
-      // 初始化轮播
-      __initSlider () {},
-      // 播放走马灯
-      __play () {},
-      // 刷新轮播
-      __refresh () {},
-      // 轮播结束
-      __onScrollEnd () {}
+      _onScrollEnd () {
+        let pageIndex = this.slider.getCurrentPage().pageX
+        if (this.loop) {
+          pageIndex -= 1
+        }
+        this.currentPageIndex = pageIndex
+        if (this.autoPlay) {
+          this._play()
+        }
+      }
     }
   }
 </script>

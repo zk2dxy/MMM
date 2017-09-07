@@ -2,7 +2,7 @@
   <div class="recommend" ref="recommend">
     <div ref="scroll" class="recommend-content">
       <div>
-        <div v-if="recommends.length>0" ref="slider-wrapper">
+        <div v-if="recommends.length" class="slider-wrapper">
           <div class="slider-content">
             <slider ref="slider">
               <div v-for="item in recommends">
@@ -42,7 +42,6 @@
       _getRecommend () {
         getRecommend().then(res => {
           if (res.code === ERR_OK) {
-            // console.log(res.data)
             this.recommends = res.data.slider
           } else {
             console.log('errorRequest')
