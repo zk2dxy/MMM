@@ -13,10 +13,67 @@
 </template>
 
 <script type="text/ecmascript-6">
-  // import { addClass } from 'common/js/dom.js'
+  import { addClasses } from 'common/js/dom.js'
   // import BScroll from 'better-scroll'
 
-  export default {}
+  export default {
+    name: 'slider',
+    props: {
+      loop: {
+        type: Boolean,
+        default: true
+      },
+      autoPlay: {
+        type: Boolean,
+        default: true
+      },
+      interval: {
+        type: Boolean,
+        default: true
+      }
+    },
+    activated () {
+      // keep-alive 组件激活时调用。
+    },
+    beforeDestroy () {
+      // 实例销毁之前调用。在这一步，实例仍然完全可用。
+    },
+    created () {
+      // 实例已经创建完成之后被调用
+    },
+    destroyed () {
+      // Vue 实例销毁后调用
+    },
+    deactivated () {
+      // keep-alive 组件停用时调用。
+    },
+    mounted () {
+      setTimeout(() => {
+        this.__initSliderLayer()
+      }, 1000)
+    },
+    methods: {
+      // 初始化轮播
+      __initSliderLayer (isResize) {
+        let sliderWidth = this.$refs.slider.clientWidth
+        // console.warn(`sliderWidth = ` + sliderWidth)
+        this.children = this.$refs.sliderGroup.children
+        // console.warn(this.children)
+        for (let i = 0; i < this.children.length; i++) {
+          addClasses(this.children[i], 'slider-item')
+          this.children[i].style.width = sliderWidth + `px`
+        }
+      },
+      // 初始化轮播
+      __initSlider () {},
+      // 播放走马灯
+      __play () {},
+      // 刷新轮播
+      __refresh () {},
+      // 轮播结束
+      __onScrollEnd () {}
+    }
+  }
 </script>
 <style lang="stylus" rel="stylesheet/stylus" scoped>
   @import '~common/stylus/variable.styl'

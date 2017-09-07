@@ -3,11 +3,12 @@ export function hasClass (el, className) {
   return reg.test(el.className)
 }
 
-export function addClass (el, className) {
+export function addClasses (el, className) {
   if (hasClass(el, className)) {
     return false
   }
   let newClass = el.className.split(' ')
   newClass.push(className)
+  // console.error(`newClass = ` + (newClass.join(' ')))
   return newClass.join(' ')
 }
