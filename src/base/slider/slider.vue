@@ -61,6 +61,7 @@
       window.addEventListener('resize', () => { // 窗口事件
         this._initSliderWidth(true)
         clearTimeout(this.resizeTimer)
+        this.dots = this.children.length
         this.resizeTimer = setTimeout(() => {
           if (this.slider.isInTransition) {
             this._onScrollEnd()
@@ -76,40 +77,47 @@
     methods: {
       refresh () { // refresh bscroll
         if (this.slider) {
-          this._initSliderWidth(true)
+          this._initSliderWidth(true) // 设置isResize的值。判断是否为resize
           this.slider.refresh()
         }
       },
       _initSliderWidth (isResize) { // 初始化轮播的宽度
         this.children = this.$refs.sliderGroup.children // Dom => child
-        let sliderWidth = this.$refs.slider.clientWidth
-        this.dots = this.children.length
-        let width = 0
+        let sliderWidth = this.$refs.slider.clientWidth // single slider width
+        let width = 0 // sliderGroup width
         for (let child of this.children) {
           addClass(child, 'slider-item') // Add class 'slider-item'
           child.style.width = sliderWidth + `px` // Set single slider width
-          width += sliderWidth
+          width += sliderWidth // calc all slider's width
         }
+        // isResize=> 1、true 不复制额外两个slider 2、false 初始化多复制2个slider
         if (this.loop && !isResize) {
           width += 2 * sliderWidth // Slider two more width for copy slider
         }
+        // 设置轮播组的总宽度
         this.$refs.sliderGroup.style.width = width + `px`
+        // 算slider的点的个数
+        if (this.slider) {
+          this.dots = this.children.length - 2 // 如果轮播生效 则减去2个slider
+        } else {
+          this.dots = this.children.length // 如果初始化，则不减去2个复制的slider的个数
+        }
       },
       _initSlider () { // 初始化轮播
         this.slider = new BScroll(this.$refs.slider, {
-          scrollX: true,
-          scrollY: false,
-          momentum: false,
+          scrollX: true, // 横向scroll
+          scrollY: false, // 纵向scroll
+          momentum: false, // 轮播惯性
           snap: {
-            loop: this.loop,
-            threshold: 0.3,
-            speed: 400
+            loop: this.loop, // 是否循环
+            threshold: 0.3, // 阈值
+            speed: 400 // 轮播速度
           }
         })
-        this.slider.on('scrollEnd', this._onScrollEnd)
+        this.slider.on('scrollEnd', this._onScrollEnd) // slider结束
         this.slider.on('beforeScrollStart', () => {
           if (this.autoPlay) {
-            clearTimeout(this.timer)
+            clearTimeout(this.timer) // slider开始的时候。关闭定时器
           }
         })
       },

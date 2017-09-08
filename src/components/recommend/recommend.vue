@@ -1,7 +1,8 @@
 <template>
   <div class="recommend" ref="recommend">
-    <div ref="scroll" class="recommend-content">
+    <scroll ref="scroll" class="recommend-content" :data="discList" v-if="discList">
       <div>
+        <!--这是轮播的数据-->
         <div v-if="recommends.length" class="slider-wrapper">
           <div class="slider-content">
             <slider ref="slider">
@@ -13,8 +14,23 @@
             </slider>
           </div>
         </div>
+        <!--这是歌单的数据-->
+        <div class="recommend-list">
+          <h1 class="list-title">热门歌单推荐</h1>
+          <ul>
+            <li v-for="item in discList" class="item">
+              <div class="icon">
+                <img width="60" height="60" :src="item.imgurl">
+              </div>
+              <div class="text">
+                <h2 class="name" v-html="item.creator.name"></h2>
+                <p class="desc" v-html="item.dissname"></p>
+              </div>
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
+    </scroll>
   </div>
 </template>
 
@@ -22,15 +38,18 @@
   import { getRecommend, getDiscList } from 'api/recommend'
   import { ERR_OK } from 'common/js/config'
   import Slider from 'base/slider/slider'
+  import Scroll from 'base/scroll/scroll'
 
   export default {
     data () {
       return {
-        recommends: []
+        recommends: [], // 轮播数据容器
+        discList: [] // 歌单数据容器
       }
     },
     components: {
-      Slider
+      Slider,
+      Scroll
     },
     created () {
       this._getRecommends()
@@ -49,7 +68,12 @@
       },
       _getDiscList () {
         getDiscList().then((res) => {
-          console.log(res)
+          if (res.code === ERR_OK) {
+            console.log(res.data.list)
+            this.discList = res.data.list
+          } else {
+            this.discList = []
+          }
         })
       }
     }
@@ -105,8 +129,10 @@
             .name
               margin-bottom: 10px
               color: $color-text
+              text-overflow ellipsis
             .desc
               color: $color-text-d
+              text-overflow ellipsis
       .loading-container
         position: absolute
         width: 100%
