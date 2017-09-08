@@ -13,8 +13,8 @@ Vue.config.productionTip = false
 Vue.use(VueLazyLoad, {
   error: require('common/image/error.png'),
   loading: require('common/image/default.png'),
-  preLoad: 1.3,
-  attempt: 1
+  preLoad: 1.3, // 预加载的宽高比
+  attempt: 1 // 尝试加载次数
   // the default is ['scroll', 'wheel', 'mousewheel', 'resize', 'animationend', 'transitionend']
   // listenEvents: [ 'scroll' ]
 })
