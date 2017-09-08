@@ -76,7 +76,7 @@
     methods: {
       refresh () { // refresh bscroll
         if (this.slider) {
-          this._setSliderWidth(true)
+          this._initSliderWidth(true)
           this.slider.refresh()
         }
       },
