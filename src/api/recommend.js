@@ -13,10 +13,6 @@ export function getRecommend () {
   return jsonp(url, param, CONFIG.options)
 }
 
-export function getPlaylist () {
-  console.log('getPlaylist')
-}
-
 export function getDiscList () {
   let url = '/api/getDiscList'
   let param = Object.assign({}, CONFIG.commonParam, {
@@ -32,7 +28,7 @@ export function getDiscList () {
     sin: 0,
     ein: 29
   })
-  console.error(param)
+  // console.error(param)
   return axios.get(url, {params: param}).then((res) => {
     return Promise.resolve(res.data)
   })

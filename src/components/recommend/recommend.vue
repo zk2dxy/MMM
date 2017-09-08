@@ -1,6 +1,6 @@
 <template>
   <div class="recommend" ref="recommend">
-    <scroll ref="scroll" class="recommend-content" :data="discList" v-if="discList">
+    <scroll ref="scroll" class="recommend-content" :data="discList">
       <div>
         <!--这是轮播的数据-->
         <div v-if="recommends.length" class="slider-wrapper">
@@ -8,7 +8,7 @@
             <slider ref="slider">
               <div v-for="item in recommends">
                 <a :href="item.linkUrl">
-                  <img :src="item.picUrl">
+                  <img @load="loadImage" :src="item.picUrl">
                 </a>
               </div>
             </slider>
@@ -20,7 +20,7 @@
           <ul>
             <li v-for="item in discList" class="item">
               <div class="icon">
-                <img width="60" height="60" :src="item.imgurl">
+                <img width="60" height="60" v-lazy="item.imgurl">
               </div>
               <div class="text">
                 <h2 class="name" v-html="item.creator.name"></h2>
@@ -56,25 +56,33 @@
       this._getDiscList()
     },
     methods: {
-      _getRecommends () {
+      _getRecommends () { // 获取轮播数据
         getRecommend().then((res) => {
           if (res.code === ERR_OK) {
             this.recommends = res.data.slider
-            console.log(this.recommends)
+            console.error(this.recommends)
           } else {
             this.recommends = []
           }
         })
       },
-      _getDiscList () {
+      _getDiscList () { // 获取榜单列表
         getDiscList().then((res) => {
           if (res.code === ERR_OK) {
-            console.log(res.data.list)
+            console.error(res.data.list)
             this.discList = res.data.list
           } else {
             this.discList = []
           }
         })
+      },
+      loadImage () { // 单个slider 图片加载过后 刷新一次scroll 图片
+        if (!this.checkloaded) {
+          this.checkloaded = true
+          setTimeout(() => {
+            this.$refs.scroll._refresh()
+          }, 20)
+        }
       }
     }
   }

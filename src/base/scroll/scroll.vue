@@ -43,14 +43,11 @@
     },
     methods: {
       _initBScroll () {
-        if (!this.$refs.wrapper) {
-          return false
-        }
-        this.scroll = new BScroll(this.$refs.wrapper, {
+        this.$refs.wrapper && (this.scroll = new BScroll(this.$refs.wrapper, {
           probeType: this.probeType,
           click: this.click,
           eventPassthrough: this.direction === DIRECTION_V ? DIRECTION_H : DIRECTION_V
-        })
+        }))
       },
       _enable () {
         this.scroll && this.scroll.enable()
