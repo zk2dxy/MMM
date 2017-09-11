@@ -57,6 +57,12 @@
       },
       _refresh () {
         this.scroll && this.scroll.refresh()
+      },
+      _scrollTo () {
+        this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
+      },
+      _scrollToElement () {
+        this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
       }
     },
     watch: {

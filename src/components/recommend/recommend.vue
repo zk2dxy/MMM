@@ -1,6 +1,7 @@
 <template>
   <div class="recommend" ref="recommend">
     <scroll ref="scroll" class="recommend-content" :data="discList">
+      <!--Scroll Area-->
       <div>
         <!--这是轮播的数据-->
         <div v-if="recommends.length" class="slider-wrapper">
@@ -30,6 +31,10 @@
           </ul>
         </div>
       </div>
+      <!--Loading Area-->
+      <div class="loading-container">
+        <loading v-show="!discList.length"></loading>
+      </div>
     </scroll>
   </div>
 </template>
@@ -39,6 +44,7 @@
   import { ERR_OK } from 'common/js/config'
   import Slider from 'base/slider/slider'
   import Scroll from 'base/scroll/scroll'
+  import Loading from 'base/loading/loading'
 
   export default {
     data () {
@@ -49,10 +55,13 @@
     },
     components: {
       Slider,
-      Scroll
+      Scroll,
+      Loading
     },
     created () {
+      // 获取轮播
       this._getRecommends()
+      // 获取推荐列表
       this._getDiscList()
     },
     methods: {
@@ -60,7 +69,7 @@
         getRecommend().then((res) => {
           if (res.code === ERR_OK) {
             this.recommends = res.data.slider
-            console.error(this.recommends)
+            // console.error(this.recommends)
           } else {
             this.recommends = []
           }
@@ -69,7 +78,7 @@
       _getDiscList () { // 获取榜单列表
         getDiscList().then((res) => {
           if (res.code === ERR_OK) {
-            console.error(res.data.list)
+            // console.error(res.data.list)
             this.discList = res.data.list
           } else {
             this.discList = []
