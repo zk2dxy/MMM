@@ -3,14 +3,14 @@
     <slot></slot>
   </div>
 </template>
-<script type="text/ecmascript-6">
+
+<script>
   import BScroll from 'better-scroll'
 
   const DIRECTION_H = 'horizontal'
   const DIRECTION_V = 'vertical'
 
   export default {
-    name: `scroll`,
     props: {
       probeType: {
         type: Number,
@@ -18,63 +18,95 @@
       },
       click: {
         type: Boolean,
-        default: true
+        default: false
+      },
+      listenScroll: {
+        type: Boolean,
+        default: false
       },
       data: {
         type: Array,
         default: null
       },
-      direction: {
-        type: String,
-        default: DIRECTION_V
+      pullup: {
+        type: Boolean,
+        default: false
+      },
+      beforeScroll: {
+        type: Boolean,
+        default: false
       },
       refreshDelay: {
         type: Number,
         default: 20
+      },
+      direction: {
+        type: String,
+        default: DIRECTION_V
       }
-    },
-    data () {
-      return {}
     },
     mounted () {
       setTimeout(() => {
-        this._initBScroll()
-      }, this.refreshDelay)
+        this._initScroll()
+      }, 20)
     },
     methods: {
-      _initBScroll () {
-        this.$refs.wrapper && (this.scroll = new BScroll(this.$refs.wrapper, {
+      _initScroll () {
+        if (!this.$refs.wrapper) {
+          return
+        }
+        this.scroll = new BScroll(this.$refs.wrapper, {
           probeType: this.probeType,
           click: this.click,
           eventPassthrough: this.direction === DIRECTION_V ? DIRECTION_H : DIRECTION_V
-        }))
+        })
+
+        if (this.listenScroll) {
+          this.scroll.on('scroll', (pos) => {
+            this.$emit('scroll', pos)
+          })
+        }
+
+        if (this.pullup) {
+          this.scroll.on('scrollEnd', () => {
+            if (this.scroll.y <= (this.scroll.maxScrollY + 50)) {
+              this.$emit('scrollToEnd')
+            }
+          })
+        }
+
+        if (this.beforeScroll) {
+          this.scroll.on('beforeScrollStart', () => {
+            this.$emit('beforeScroll')
+          })
+        }
       },
-      _enable () {
-        this.scroll && this.scroll.enable()
-      },
-      _disable () {
+      disable () {
         this.scroll && this.scroll.disable()
       },
-      _refresh () {
+      enable () {
+        this.scroll && this.scroll.enable()
+      },
+      refresh () {
         this.scroll && this.scroll.refresh()
       },
-      _scrollTo () {
+      scrollTo () {
         this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
       },
-      _scrollToElement () {
+      scrollToElement () {
         this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
       }
     },
     watch: {
       data () {
-        console.log('watch => data')
         setTimeout(() => {
-          this._refresh()
+          this.refresh()
         }, this.refreshDelay)
       }
     }
   }
 </script>
-<style lang="stylus" rel="stylesheet/stylus" scoped>
+
+<style scoped lang="stylus" rel="stylesheet/stylus">
 
 </style>
