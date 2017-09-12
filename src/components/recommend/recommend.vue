@@ -89,7 +89,7 @@
         if (!this.checkloaded) {
           this.checkloaded = true
           setTimeout(() => {
-            this.$refs.scroll.refresh()
+            this.$refs.scroll.refresh() // scroll
           }, 20)
         }
       }
