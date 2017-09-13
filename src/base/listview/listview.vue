@@ -5,6 +5,7 @@
           :data="data"
           class="listView"
           ref="listView">
+    <!--歌手-->
     <ul>
       <li v-if="data.length" v-for="group in data" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{group.title}}</h2>
@@ -16,15 +17,20 @@
         </uL>
       </li>
     </ul>
-    <div class="list-shortcut" @touchstart.stop.prevent="onShortcutTouchStart"
-         @touchmove.stop.prevent="onShortcutTouchMove"
-         @touchend.stop>
+    <!--缩略字母-->
+    <div
+      class="list-shortcut"
+      @touchstart.stop.prevent="onShortcutTouchStart"
+      @touchmove.stop.prevent="onShortcutTouchMove"
+      @touchend.stop
+    >
       <ul>
         <li v-for="(item, index) in shortcutList" :data-index="index" class="item"
             :class="{'current':parseInt(currentIndex)===index}">{{item}}
         </li>
       </ul>
     </div>
+    <!--浮标-->
     <div class="list-fixed" ref="fixed" v-show="fixedTitle">
       <div class="fixed-title">{{fixedTitle}} </div>
     </div>
