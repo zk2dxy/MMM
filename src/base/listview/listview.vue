@@ -3,10 +3,10 @@
           :listen-scroll="listenScroll"
           :probe-type="probeType"
           :data="data"
-          class="listview"
-          ref="listview">
+          class="listView"
+          ref="listView">
     <ul>
-      <li v-for="group in data" class="list-group" ref="listGroup">
+      <li v-if="data.length" v-for="group in data" class="list-group" ref="listGroup">
         <h2 class="list-group-title">{{group.title}}</h2>
         <uL>
           <li @click="selectItem(item)" v-for="item in group.items" class="list-group-item">
@@ -33,7 +33,7 @@
 
 <script>
   import Scroll from 'base/scroll/scroll'
-  import {getData} from 'common/js/dom'
+  import { getData } from 'common/js/dom'
 
   const TITLE_HEIGHT = 30
   const ANCHOR_HEIGHT = 18
@@ -65,6 +65,11 @@
         diff: -1
       }
     },
+    mounted () {
+      setTimeout(() => {
+        this._calculateHeight()
+      }, 20)
+    },
     created () {
       this.probeType = 3
       this.listenScroll = true
@@ -80,7 +85,6 @@
         let firstTouch = e.touches[0]
         this.touch.y1 = firstTouch.pageY
         this.touch.anchorIndex = anchorIndex
-
         this._scrollTo(anchorIndex)
       },
       onShortcutTouchMove (e) {
@@ -88,11 +92,10 @@
         this.touch.y2 = firstTouch.pageY
         let delta = (this.touch.y2 - this.touch.y1) / ANCHOR_HEIGHT | 0
         let anchorIndex = parseInt(this.touch.anchorIndex) + delta
-
         this._scrollTo(anchorIndex)
       },
       refresh () {
-        this.$refs.listview.refresh()
+        this.$refs.listView.refresh()
       },
       scroll (pos) {
         this.scrollY = pos.y
@@ -117,8 +120,8 @@
         } else if (index > this.listHeight.length - 2) {
           index = this.listHeight.length - 2
         }
-        this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
-        this.scrollY = this.$refs.listview.scroll.y
+        this.$refs.listView.scrollToElement(this.$refs.listGroup[index], 0)
+        this.scrollY = this.$refs.listView.scroll.y
       }
     },
     watch: {
@@ -166,7 +169,7 @@
 <style scoped lang="stylus" rel="stylesheet/stylus">
   @import "~common/stylus/variable"
 
-  .listview
+  .listView
     position: relative
     width: 100%
     height: 100%

@@ -78,8 +78,8 @@
         ret.sort((a, b) => {
           return a.title.charCodeAt(0) - b.title.charCodeAt(0)
         })
-        console.error(`this.singer=>`)
-        console.error(hot.concat(ret))
+        // console.error(`this.singer=>`)
+        // console.error(hot.concat(ret))
         return hot.concat(ret)
       }
     }
